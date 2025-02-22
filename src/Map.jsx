@@ -8,20 +8,6 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { Icon } from "leaflet";
-
-// Fix for default marker icons
-import L from "leaflet";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-});
 
 // MapEvents component to handle click events
 function MapEvents({ onMapClick }) {
@@ -34,11 +20,13 @@ function MapEvents({ onMapClick }) {
 }
 
 function Map() {
+  // Default position (London)
   const [position, setPosition] = useState([51.505, -0.09]);
+  // Stores all markers
   const [markers, setMarkers] = useState([]);
 
   useEffect(() => {
-    // Get user's location
+    // Tries to get user's current location when component mounts
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (location) => {
@@ -52,6 +40,7 @@ function Map() {
   }, []);
 
   const handleMapClick = (e) => {
+    // Creates a new marker when user clicks on the map
     const newMarker = {
       position: [e.latlng.lat, e.latlng.lng],
       title: `Location ${markers.length + 1}`,
